@@ -8,6 +8,9 @@ name: Update Repo News
 on:
   schedule:
     - cron: "17 * * * *"
+  push:                      # code changes redeploy right away (free built-in token, no Claude)
+    branches: [main]
+    paths: ["site/**", "scripts/**", ".github/workflows/**"]
   workflow_dispatch:
     inputs:
       long_windows:
