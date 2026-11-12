@@ -17,8 +17,8 @@
   #hdr .nav, #hdr .nav a { color: #000; }
   #hdr .nav a.on { color: #fff; }
   #hdr .right { margin-left: auto; color: #000; font-size: 8pt; padding-right: 4px; }
-  #runBtn { color: #000; opacity: .45; font-size: 9pt; padding: 0 2px; }
-  #runBtn:hover { opacity: 1; }
+  #runBtn { color: #000; font-size: 8pt; padding: 0 5px; margin-left: 4px; border: 1px solid rgba(0,0,0,.55); border-radius: 3px; white-space: nowrap; }
+  #runBtn:hover { background: #fff; border-color: #fff; color: #ff6600; }
   #hdr select { font: inherit; font-size: 8pt; background: #ff6600; border: 0; color: #000; cursor: pointer; padding: 0; }
   .row2 { padding: 5px 10px 0 10px; font-size: 9pt; color: #828282; line-height: 1.6; }
   .row2 a { color: #828282; }
@@ -65,7 +65,7 @@
       <a href="#" data-view="new">new</a> |
       <select id="lang" aria-label="Language"><option value="">all languages</option></select>
     </span>
-    <span class="right"><span id="updated">loading&hellip;</span> <a id="runBtn" href="https://github.com/ishaan2006/repo-news/actions/workflows/update.yml" target="_blank" rel="noopener" title="Run an update (opens GitHub Actions, repo owner only)" aria-label="Run an update">&#x21bb;</a></span>
+    <span class="right"><span id="updated">loading&hellip;</span> <a id="runBtn" href="https://github.com/ishaan2006/repo-news/actions/workflows/update.yml" target="_blank" rel="noopener" title="Run an update (opens GitHub Actions, repo owner only)" aria-label="Run an update">&#x21bb; update</a></span>
   </div>
   <div class="row2" id="wins"></div>
   <div class="row2" id="cats"></div>
