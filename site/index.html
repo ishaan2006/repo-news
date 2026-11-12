@@ -18,6 +18,8 @@
   #hdr .nav a.on { color: #fff; }
   #hdr .right { margin-left: auto; color: #000; font-size: 8pt; padding-right: 4px; }
   #runBtn { color: #000; font-size: 8pt; padding: 0 5px; margin-left: 4px; border: 1px solid rgba(0,0,0,.55); border-radius: 3px; white-space: nowrap; }
+  #runBtn[hidden] { display: none; }
+  #logo { cursor: pointer; user-select: none; }
   #runBtn:hover { background: #fff; border-color: #fff; color: #ff6600; }
   #hdr select { font: inherit; font-size: 8pt; background: #ff6600; border: 0; color: #000; cursor: pointer; padding: 0; }
   .row2 { padding: 5px 10px 0 10px; font-size: 9pt; color: #828282; line-height: 1.6; }
@@ -65,7 +67,7 @@
       <a href="#" data-view="new">new</a> |
       <select id="lang" aria-label="Language"><option value="">all languages</option></select>
     </span>
-    <span class="right"><span id="updated">loading&hellip;</span> <a id="runBtn" href="https://github.com/ishaan2006/repo-news/actions/workflows/update.yml" target="_blank" rel="noopener" title="Run an update (opens GitHub Actions, repo owner only)" aria-label="Run an update">&#x21bb; update</a></span>
+    <span class="right"><span id="updated">loading&hellip;</span> <a id="runBtn" href="https://github.com/ishaan2006/repo-news/actions/workflows/update.yml" target="_blank" rel="noopener" title="Run an update (opens GitHub Actions, repo owner only)" aria-label="Run an update" hidden>&#x21bb; update</a></span>
   </div>
   <div class="row2" id="wins"></div>
   <div class="row2" id="cats"></div>
@@ -225,6 +227,13 @@
   });
   $("lang").addEventListener("change", function () { change(function () { lang = $("lang").value; }); });
   window.addEventListener("hashchange", function () { readHash(); page = 0; render(); });
+
+  // Hidden update button: click the G logo 5 times to reveal it.
+  var logoClicks = 0;
+  $("logo").addEventListener("click", function () {
+    logoClicks++;
+    if (logoClicks >= 5) $("runBtn").hidden = false;
+  });
 
   function load() {
     fetch("data.json?t=" + Date.now(), { cache: "no-store" })
