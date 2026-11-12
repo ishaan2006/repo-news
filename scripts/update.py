@@ -137,6 +137,7 @@ def gql(query):
         GQL_ERRORS_SHOWN[0] += 1
         log("graphql errors:", json.dumps(errs[:2])[:400])
     data = j.get("data") or {}
+    data["__errors"] = [e.get("type") or e.get("message", "")[:40] for e in j.get("errors", [])]
     rl = data.get("rateLimit")
     if rl:
         Budget.gql_remaining = rl.get("remaining", Budget.gql_remaining)
@@ -301,7 +302,9 @@ def gql_repos(names, build):
     def attempt(chunk):
         data = gql(build(chunk))
         got = {n: data.get(f"r{i}") for i, n in enumerate(chunk)}
-        if len(chunk) > 1 and not any(got.values()):
+        if any(t in ("FORBIDDEN", "INSUFFICIENT_SCOPES") for t in data.get("__errors", [])):
+            raise PermissionError("this token can't read star timestamps through GraphQL")
+        if len(chunk) > 1 and not any(got.values()):  # whole batch failed (timeout): split it
             mid = len(chunk) // 2
             return {**attempt(chunk[:mid]), **attempt(chunk[mid:])}
         return got
@@ -470,7 +473,13 @@ def main():
     log(f"candidates: {len(cands)}")
 
     # 2. metadata + newest 100 stars for every candidate
-    meta, stars = probe(sorted(cands))
+    try:
+        meta, stars = probe(sorted(cands))
+    except PermissionError as e:
+        log(f"STAR TIMESTAMPS UNAVAILABLE: {e}. Keeping the published short-window numbers. "
+            "Use a classic token (no scopes) for GH_STATS_TOKEN.")
+        meta, stars = {}, {}
+        computed -= set(SHORT) | set(MEDIUM)
     meta = {n: m for n, m in meta.items() if not m["fork"] and not m["arch"] and not looks_spam(m)}
     log(f"probed {len(meta)} repos (after filters), graphql calls {Budget.gql_calls}")
 
