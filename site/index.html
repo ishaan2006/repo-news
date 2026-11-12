@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Repo News</title>
-<meta name="description" content="GitHub repos ranked by stars gained in the last 12 hours, day, week, month or year. Hacker News style.">
+<meta name="description" content="GitHub repos ranked Hacker News style: what's hot right now, or most stars gained today, this week, this month or this year.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Crect width='18' height='18' fill='%23ff6600'/%3E%3Crect x='.5' y='.5' width='17' height='17' fill='none' stroke='%23fff'/%3E%3Ctext x='9' y='13.5' font-family='Verdana' font-size='12' font-weight='bold' fill='%23fff' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
 <style>
   body { margin: 0; padding: 8px 0; background: #fff; font-family: Verdana, Geneva, sans-serif; font-size: 10pt; color: #828282; }
   a { color: #000; text-decoration: none; }
@@ -14,50 +15,55 @@
   #logo { border: 1px solid #fff; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 11pt; line-height: 1; margin-right: 2px; }
   #hdr .brand { font-weight: bold; color: #000; margin-right: 6px; }
   #hdr .nav, #hdr .nav a { color: #000; }
-  #hdr .nav a { cursor: pointer; }
   #hdr .nav a.on { color: #fff; }
   #hdr .right { margin-left: auto; color: #000; font-size: 8pt; padding-right: 4px; }
   #hdr select { font: inherit; font-size: 8pt; background: #ff6600; border: 0; color: #000; cursor: pointer; padding: 0; }
-  .row2 { padding: 5px 10px 0 10px; font-size: 9pt; color: #828282; }
-  .row2 a { color: #828282; cursor: pointer; }
+  .row2 { padding: 5px 10px 0 10px; font-size: 9pt; color: #828282; line-height: 1.6; }
+  .row2 a { color: #828282; }
   .row2 a.on { color: #ff6600; font-weight: bold; }
   .row2 a:hover { text-decoration: underline; }
-  .row2 .lbl { color: #999; }
-  #note { font-size: 8pt; color: #828282; padding: 6px 10px 0 10px; }
+  .row2 .lbl { color: #a8a8a8; }
+  #note { font-size: 8pt; color: #828282; padding: 6px 10px 0 10px; min-height: 1px; }
   table.items { border-collapse: collapse; margin-top: 6px; }
   td { padding: 0; vertical-align: top; }
   td.rank { text-align: right; padding-left: 6px; padding-top: 1px; white-space: nowrap; min-width: 22px; }
   td.vote { width: 18px; text-align: center; padding-top: 4px; }
   .votearrow { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 9px solid #9a9a9a; display: inline-block; cursor: pointer; }
   .votearrow.gone { visibility: hidden; }
-  .title { font-size: 10pt; color: #000; padding-top: 1px; line-height: 1.25; }
+  .title { font-size: 10pt; color: #000; padding-top: 1px; line-height: 1.3; }
+  .title .desc { color: #000; }
   .sitebit { font-size: 8pt; color: #828282; }
   .sitebit a { color: #828282; }
   .sub { font-size: 7pt; color: #828282; padding-bottom: 5px; }
-  .sub a { color: #828282; cursor: pointer; }
+  .sub a { color: #828282; }
   .sub a:hover, .sitebit a:hover { text-decoration: underline; }
-  .gain b { color: #ff6600; font-weight: normal; }
+  .gain { color: #ff6600; }
   .spacer { height: 5px; }
-  .morelink { font-size: 10pt; color: #000; cursor: pointer; }
+  .morelink { font-size: 10pt; color: #000; }
   #foot { border-top: 2px solid #ff6600; margin-top: 12px; padding: 10px 10px 16px; text-align: center; font-size: 8pt; }
-  #foot a { color: #000; cursor: pointer; }
-  #about { display: none; text-align: left; max-width: 640px; margin: 10px auto 0; line-height: 1.5; color: #555; }
+  #foot a { color: #000; }
+  #about { display: none; text-align: left; max-width: 640px; margin: 10px auto 0; line-height: 1.55; color: #555; }
   #about.show { display: block; }
+  #about code { font-size: 8pt; }
   #empty { padding: 20px 12px; color: #828282; }
-  @media (max-width: 750px) { #wrap { width: 100%; } body { padding: 0; } .title { font-size: 11pt; } .sub { font-size: 8pt; } }
+  @media (max-width: 750px) {
+    #wrap { width: 100%; } body { padding: 0; }
+    .title { font-size: 11pt; } .sub { font-size: 8pt; line-height: 1.5; }
+    #hdr .right { width: 100%; margin-left: 24px; }
+  }
 </style>
 </head>
 <body>
 <div id="wrap">
   <div id="hdr">
-    <span id="logo">G</span>
-    <a class="brand" data-view="top">Repo News</a>
+    <span id="logo" aria-hidden="true">G</span>
+    <a class="brand" href="#" data-reset="1">Repo News</a>
     <span class="nav">
-      <a data-view="top">top</a> |
-      <a data-view="new">new</a> |
+      <a href="#" data-view="top">top</a> |
+      <a href="#" data-view="new">new</a> |
       <select id="lang" aria-label="Language"><option value="">all languages</option></select>
     </span>
-    <span class="right" id="updated"></span>
+    <span class="right" id="updated">loading&hellip;</span>
   </div>
   <div class="row2" id="wins"></div>
   <div class="row2" id="cats"></div>
@@ -65,19 +71,22 @@
   <table class="items"><tbody id="list"></tbody></table>
   <div id="empty" hidden></div>
   <div id="foot">
-    <a id="aboutBtn">about</a> | <a href="https://github.com/trending">github trending</a> | <a href="https://news.ycombinator.com/">hacker news</a>
+    <a href="#" id="aboutBtn">about</a> | <a href="https://github.com/ishaan2006/repo-news">source</a> | <a href="https://github.com/trending">github trending</a> | <a href="https://news.ycombinator.com/">hacker news</a>
     <div id="about">
-      Repo News ranks GitHub repositories by stars gained in the chosen window, counted from GitHub's own star timestamps.
-      The short windows (12h to 3d) refresh every hour and 7d/14d every 6 hours. The longer windows (1mo, 3mo, 1y, YTD) refresh when the site owner runs an update, and show their "as of" date.
-      Repos created inside a window count every star they have. A number with a "+" is a minimum: very large repos are only counted back so far.
-      <b>new</b> shows repos created recently. Categories are tagged by Claude Haiku from each repo's name, description and topics.
-      Obvious spam (cracked-software lures, star-farmed repos with no forks) is filtered out.
+      <p><b>hot</b> works like the Hacker News front page: each day's new stars count, divided by how old they are,
+      <code>stars / (age_hours + 2)^1.8</code>, summed over the last two weeks. A repo climbing right now beats one that peaked last week.</p>
+      <p><b>today, 3d &hellip; YTD</b> rank by plain stars gained in that window, counted from GitHub's daily star history.
+      GitHub only publishes whole days, so "today" is the latest day it has data for.
+      Hot and today through 3mo refresh hourly; 1y and YTD refresh when the site owner runs an update and show their date.</p>
+      <p><b>new</b> shows repos created recently. Categories are tagged by Claude Haiku from each repo's name, description and topics.
+      Obvious spam (cracked-software lures, star-farmed repos) is filtered out.</p>
     </div>
   </div>
 </div>
 <script>
 (function () {
-  var DATA = null, win = "12h", view = "top", lang = "", cat = "", page = 0, PER = 30;
+  "use strict";
+  var DATA = null, win = "hot", view = "top", lang = "", cat = "", page = 0, PER = 30;
   var CAT_LABEL = { ai: "ai/ml", swe: "swe", security: "security", finance: "finance", apps: "apps", fun: "fun", learn: "learn" };
   var CAT_ORDER = ["ai", "swe", "security", "finance", "apps", "fun", "learn"];
   var $ = function (id) { return document.getElementById(id); };
@@ -97,60 +106,69 @@
     return mo < 24 ? mo + " months ago" : Math.round(d / 365) + " years ago";
   }
   function W(key) { return (DATA.windows || []).filter(function (w) { return w.key === key; })[0]; }
-  function winLabel(w) { return w.key === "ytd" ? "since Jan 1" : "in " + w.label; }
+  function value(x) { return win === "hot" ? x.hot || 0 : (x.g && x.g[win]) || 0; }
+  function gainText(key, n) {
+    var w = W(key);
+    return '<span class="gain">+' + fmt(n) + "</span> stars " + (key === "today" ? "today" : key === "ytd" ? "since Jan 1" : "in " + w.label);
+  }
+  function dayLabel(d) { return new Date(d + "T12:00:00Z").toLocaleDateString([], { month: "short", day: "numeric" }); }
 
   function rows() {
-    var r = DATA.repos.filter(function (x) { return x.g && x.g[win] > 0; });
+    var r = DATA.repos.filter(function (x) { return value(x) > 0; });
     if (cat) r = r.filter(function (x) { return (x.k || []).indexOf(cat) >= 0; });
     if (lang) r = r.filter(function (x) { return (x.l || "").toLowerCase() === lang; });
     if (view === "new") {
-      var w = W(win), span = Math.max(7 * 864e5, Date.now() - Date.parse(w.cutoff));
-      r = r.filter(function (x) { return x.c && Date.now() - Date.parse(x.c) <= span; });
+      var w = W(win), days = Math.max(7, (w && w.days) || 14);
+      r = r.filter(function (x) { return x.c && Date.now() - Date.parse(x.c) <= days * 864e5; });
     }
-    return r.sort(function (a, b) { return b.g[win] - a.g[win]; });
+    return r.sort(function (a, b) { return value(b) - value(a); });
   }
 
   function renderBars() {
     document.querySelectorAll("#hdr .nav a").forEach(function (a) { a.classList.toggle("on", a.dataset.view === view); });
-    $("wins").innerHTML = '<span class="lbl">stars gained: </span>' + DATA.windows.map(function (w) {
-      return '<a data-win="' + w.key + '" class="' + (w.key === win ? "on" : "") + '">' + esc(w.label) + "</a>";
+    $("wins").innerHTML = '<span class="lbl">rank by: </span>' + DATA.windows.map(function (w) {
+      return '<a href="#" data-win="' + w.key + '" class="' + (w.key === win ? "on" : "") + '">' + esc(w.label) + "</a>";
     }).join(" | ");
-    $("cats").innerHTML = '<a data-cat="" class="' + (cat ? "" : "on") + '">all</a>' + CAT_ORDER.map(function (k) {
-      return ' | <a data-cat="' + k + '" class="' + (cat === k ? "on" : "") + '">' + CAT_LABEL[k] + "</a>";
+    $("cats").innerHTML = '<span class="lbl">topic: </span><a href="#" data-cat="" class="' + (cat ? "" : "on") + '">all</a>' + CAT_ORDER.map(function (k) {
+      return ' | <a href="#" data-cat="' + k + '" class="' + (cat === k ? "on" : "") + '">' + CAT_LABEL[k] + "</a>";
     }).join("");
     $("updated").textContent = "updated " + ago(DATA.generated_at) + " | " + fmt(DATA.tracked) + " repos checked";
-    var w = W(win);
-    var stale = w && w.as_of && (Date.now() - Date.parse(w.as_of)) > 3 * 3600e3;
-    $("note").textContent = !w || !w.as_of ? "This window hasn't been computed yet." :
-      stale ? w.label + " gains as of " + new Date(w.as_of).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + "." : "";
+    var w = W(win), note = "";
+    var today = new Date().toISOString().slice(0, 10);
+    if (win === "today" && DATA.data_day && DATA.data_day !== today) note = "\"today\" is " + dayLabel(DATA.data_day) + ", the latest day GitHub has published.";
+    else if (w && !w.as_of) note = "This ranking hasn't been computed yet.";
+    else if (w && w.as_of && Date.now() - Date.parse(w.as_of) > 3 * 3600e3) note = w.label + " numbers as of " + new Date(w.as_of).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + ".";
+    $("note").textContent = note;
+    document.title = "Repo News" + (win !== "hot" ? " | " + w.label : "") + (cat ? " | " + CAT_LABEL[cat] : "");
   }
 
   function render() {
     if (!DATA) return;
     renderBars();
-    var r = rows(), start = page * PER, slice = r.slice(start, start + PER), html = "", w = W(win);
+    var r = rows(), start = page * PER, slice = r.slice(start, start + PER), html = "";
     slice.forEach(function (x, i) {
       var owner = x.n.split("/")[0], url = "https://github.com/" + x.n;
-      var desc = x.d ? (x.d.length > 120 ? x.d.slice(0, 117).trim() + "..." : x.d) : "";
-      var lb = x.lb && x.lb[win] ? "+" : "";
+      var desc = x.d ? (x.d.length > 120 ? x.d.slice(0, 117).trim() + "…" : x.d) : "";
+      var gain = win === "hot"
+        ? ((x.g.today ? gainText("today", x.g.today) + " | " : "") + (x.g["7d"] ? gainText("7d", x.g["7d"]) : gainText("14d", x.g["14d"] || 0)))
+        : gainText(win, value(x));
       var hn = "https://hn.algolia.com/?query=" + encodeURIComponent("github.com/" + x.n) + "&type=story";
       html +=
         '<tr><td class="rank">' + (start + i + 1) + '.</td>' +
-        '<td class="vote"><span class="votearrow' + (voted[x.n] ? " gone" : "") + '" data-n="' + esc(x.n) + '" title="upvote"></span></td>' +
-        '<td class="title"><a href="' + esc(url) + '">' + esc(x.n) + (desc ? ": " + esc(desc) : "") + "</a>" +
-        (x.l ? ' <span class="sitebit">(<a data-lang="' + esc(x.l.toLowerCase()) + '">' + esc(x.l.toLowerCase()) + "</a>)</span>" : "") +
+        '<td class="vote"><span class="votearrow' + (voted[x.n] ? " gone" : "") + '" data-n="' + esc(x.n) + '" title="upvote" role="button" aria-label="upvote"></span></td>' +
+        '<td class="title"><a href="' + esc(url) + '">' + esc(x.n) + (desc ? '<span class="desc">: ' + esc(desc) + "</span>" : "") + "</a>" +
+        (x.l ? ' <span class="sitebit">(<a href="#" data-lang="' + esc(x.l.toLowerCase()) + '">' + esc(x.l.toLowerCase()) + "</a>)</span>" : "") +
         "</td></tr>" +
-        '<tr><td colspan="2"></td><td class="sub">' +
-        '<span class="gain"><b>+' + fmt(x.g[win]) + lb + "</b> stars " + winLabel(w) + "</span>" +
+        '<tr><td colspan="2"></td><td class="sub">' + gain +
         " | " + short(x.s) + " stars | " + short(x.f) + " forks" +
         ' | by <a href="https://github.com/' + esc(owner) + '">' + esc(owner) + "</a>" +
         " | created " + (x.c ? ago(x.c) : "?") +
-        ((x.k || []).length ? " | " + x.k.map(function (k) { return '<a data-cat="' + k + '">' + (CAT_LABEL[k] || k) + "</a>"; }).join(", ") : "") +
+        ((x.k || []).length ? " | " + x.k.map(function (k) { return '<a href="#" data-cat="' + k + '">' + (CAT_LABEL[k] || k) + "</a>"; }).join(", ") : "") +
         (x.h ? ' | <a href="' + esc(/^https?:/.test(x.h) ? x.h : "https://" + x.h) + '">site</a>' : "") +
         ' | <a href="' + esc(hn) + '">discuss</a>' +
         '</td></tr><tr class="spacer"><td colspan="3"></td></tr>';
     });
-    if (start + PER < r.length) html += '<tr><td colspan="2"></td><td class="title"><a class="morelink" id="more">More</a></td></tr>';
+    if (start + PER < r.length) html += '<tr><td colspan="2"></td><td class="title"><a href="#" class="morelink" id="more">More</a></td></tr>';
     $("list").innerHTML = html;
     $("empty").hidden = slice.length > 0;
     $("empty").textContent = slice.length ? "" : "Nothing here for this filter yet.";
@@ -164,38 +182,41 @@
     $("lang").value = lang;
   }
 
-  // shareable state in the hash, e.g. #w-7d/cat-ai/lang-rust/new
+  // shareable links: #7d+ai+lang-rust+new  (empty = hot, all topics)
   function writeHash() {
     var parts = [];
-    if (win !== "12h") parts.push("w-" + win);
-    if (cat) parts.push("cat-" + cat);
+    if (win !== "hot") parts.push(win);
+    if (cat) parts.push(cat);
     if (lang) parts.push("lang-" + lang.replace(/[^a-z0-9]+/g, "-"));
     if (view === "new") parts.push("new");
-    var h = parts.join("-_-");
-    if (("#" + h) !== location.hash) history.replaceState(null, "", h ? "#" + h : location.pathname);
+    var h = parts.join("+");
+    if (("#" + h) !== (location.hash || "#")) history.replaceState(null, "", h ? "#" + h : location.pathname + location.search);
   }
   function readHash() {
-    win = "12h"; cat = ""; lang = ""; view = "top";
-    (location.hash.slice(1) || "").split("-_-").forEach(function (p) {
-      if (p.indexOf("w-") === 0 && DATA && W(p.slice(2))) win = p.slice(2);
-      else if (p.indexOf("cat-") === 0 && CAT_LABEL[p.slice(4)]) cat = p.slice(4);
+    win = "hot"; cat = ""; lang = ""; view = "top";
+    decodeURIComponent(location.hash.slice(1)).split("+").forEach(function (p) {
+      if (!p) return;
+      if (DATA && W(p)) win = p;
+      else if (CAT_LABEL[p]) cat = p;
+      else if (p === "new") view = "new";
       else if (p.indexOf("lang-") === 0 && DATA) {
         var slug = p.slice(5);
         DATA.repos.forEach(function (x) { var l = (x.l || "").toLowerCase(); if (l.replace(/[^a-z0-9]+/g, "-") === slug) lang = l; });
-      } else if (p === "new") view = "new";
+      }
     });
     if (DATA) $("lang").value = lang;
   }
   function change(fn) { fn(); page = 0; writeHash(); render(); window.scrollTo(0, 0); }
 
   document.addEventListener("click", function (e) {
-    var t = e.target.closest("[data-win],[data-cat],[data-lang],[data-view],.votearrow,#more,#aboutBtn");
+    var t = e.target.closest("[data-win],[data-cat],[data-lang],[data-view],[data-reset],.votearrow,#more,#aboutBtn");
     if (!t) return;
     if (t.classList.contains("votearrow")) { voted[t.dataset.n] = 1; store("rn-voted", voted); t.classList.add("gone"); return; }
+    e.preventDefault();
     if (t.id === "aboutBtn") { $("about").classList.toggle("show"); return; }
     if (t.id === "more") { page++; render(); window.scrollTo(0, 0); return; }
-    e.preventDefault();
-    if (t.dataset.win !== undefined) change(function () { win = t.dataset.win; });
+    if (t.dataset.reset) change(function () { win = "hot"; cat = ""; lang = ""; view = "top"; $("lang").value = ""; });
+    else if (t.dataset.win !== undefined) change(function () { win = t.dataset.win; });
     else if (t.dataset.cat !== undefined) change(function () { cat = t.dataset.cat; });
     else if (t.dataset.lang !== undefined) change(function () { lang = t.dataset.lang; $("lang").value = lang; });
     else if (t.dataset.view !== undefined) change(function () { view = t.dataset.view; });
@@ -205,9 +226,9 @@
 
   function load() {
     fetch("data.json?t=" + Date.now(), { cache: "no-store" })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { DATA = d; fillLangs(); readHash(); render(); })
-      .catch(function () { $("empty").hidden = false; $("empty").textContent = "Could not load the latest data. Try reloading."; });
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) { var first = !DATA; DATA = d; fillLangs(); if (first) readHash(); render(); })
+      .catch(function () { if (!DATA) { $("updated").textContent = ""; $("empty").hidden = false; $("empty").textContent = "Could not load the latest data. Try reloading."; } });
   }
   load();
   setInterval(load, 10 * 60 * 1000);
