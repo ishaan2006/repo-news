@@ -1,0 +1,68 @@
+name: Update Repo News
+
+# Cost rules:
+#  - Scheduled runs use ONLY GitHub's free built-in token. They never see your secrets
+#    and never call Claude. They refresh 12h / 1d / 3d hourly and 7d / 14d every 6 hours.
+#  - Your GH_STATS_TOKEN and ANTHROPIC_API_KEY are used only when you press
+#    "Run workflow" (Actions tab), for the long windows and for Haiku categories.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      long_windows:
+        description: "Recompute 1mo / 3mo / 1y / YTD (uses your GH_STATS_TOKEN, free)"
+        type: boolean
+        default: true
+      categories:
+        description: "Label new repos with Claude Haiku (uses your ANTHROPIC_API_KEY, costs a few cents)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: repo-news
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute rankings
+        env:
+          STATS_TOKEN: ${{ github.event_name == 'workflow_dispatch' && secrets.GH_STATS_TOKEN || github.token }}
+          ANTHROPIC_API_KEY: ${{ github.event_name == 'workflow_dispatch' && inputs.categories && secrets.ANTHROPIC_API_KEY || '' }}
+          EVENT: ${{ github.event_name }}
+          LONG: ${{ inputs.long_windows }}
+          LABELS: ${{ inputs.categories }}
+          PREV_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data.json
+        run: |
+          ARGS=""
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            ARGS="--medium"
+            if [ "$LONG" = "true" ]; then ARGS="$ARGS --long"; fi
+            if [ "$LABELS" = "true" ]; then ARGS="$ARGS --labels"; fi
+          fi
+          python3 scripts/update.py --out site/data.json --prev "$PREV_URL" $ARGS
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
