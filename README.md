@@ -1,5 +1,10 @@
 # Repo News
 
+[![Test](https://github.com/ishaan2006/repo-news/actions/workflows/test.yml/badge.svg)](https://github.com/ishaan2006/repo-news/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Python 3](https://img.shields.io/badge/python-3.12-blue)
+![Dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen)
+
 **Live site: https://ishaan2006.github.io/repo-news/**
 
 A Hacker News style front page for GitHub. It ranks repositories by how fast they are gaining stars,
@@ -87,3 +92,6 @@ CI runs it on every push.
 ## Related
 [Repo Translator](https://github.com/ishaan2006/repo-translator) is a companion browser extension that translates
 non-English READMEs and commit messages on GitHub, so repos found here are readable regardless of language.
+
+## License
+[MIT](LICENSE). See [SECURITY.md](SECURITY.md) to report a vulnerability.
