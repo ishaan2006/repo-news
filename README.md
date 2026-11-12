@@ -11,6 +11,8 @@ A Hacker News style front page for GitHub. It ranks repositories by how fast the
 with presets from today to a year, topic filters, and a language filter. There is no server and no database:
 a GitHub Actions job computes the rankings into one JSON file and GitHub Pages serves it with a static page.
 
+![Repo News front page: hot ranking with stars today and in 7 days, preset windows and topic filters](docs/screenshot.png)
+
 ## What it ranks
 - **hot** (default): Hacker News' decay formula applied to daily star counts,
   `score = sum(stars_that_day / (age_hours + 2)^1.8)` over the last 14 days. A repo climbing right now beats one that peaked last week.
