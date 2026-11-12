@@ -16,19 +16,20 @@ a GitHub Actions job computes the rankings into one JSON file and GitHub Pages s
 ## Architecture
 
 ```
- hourly cron / manual run / push to main
-                  │
-                  ▼
- ┌───────────────────────────────── GitHub Actions (scripts/update.py) ─────────────────────────────────┐
- │ 1. candidates   GitHub Search + GitHub Trending feeds (new and active repos)                          │
- │ 2. metadata     GraphQL, batched; drops forks, archived repos and spam                                │
- │ 3. star history REST /stargazers/history, weekly buckets with a per-day breakdown, 8 threads          │
- │ 4. score        windows + hot score, anchored to the latest day GitHub has published                 │
- │ 5. labels       keyword rules; Claude Haiku (manual runs only) for repos it has not seen              │
- │ 6. publish      top 150 per ranking + top 25 per topic  ->  site/data.json                            │
- └───────────────────────────────────────────────────┬───────────────────────────────────────────────────┘
-                                                      ▼
-                             GitHub Pages: static index.html reads data.json in the browser
+ hourly cron  |  manual run  |  push to main
+                     |
+                     v
+ +-- GitHub Actions: scripts/update.py -----------------------------+
+ | 1. candidates    GitHub Search + Trending feeds                  |
+ | 2. metadata      GraphQL, batched; drop forks, archived, spam    |
+ | 3. star history  REST weekly buckets with per-day counts         |
+ | 4. score         windows + hot score for the latest full day     |
+ | 5. labels        keyword rules; Claude Haiku on manual runs      |
+ | 6. publish       top 150 per ranking, 25 per topic -> data.json  |
+ +------------------------------------------------------------------+
+                     |
+                     v
+ GitHub Pages: static index.html fetches data.json in the browser
 ```
 
 State between runs is the previously published `data.json` itself, which the job downloads at the start.
