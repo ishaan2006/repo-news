@@ -1,0 +1,45 @@
+name: Update Today (short windows only)
+
+# Quick refresh: only the short rankings (hot, today, 3d, 7d, 14d, 1mo, 3mo).
+#  - Manual only ("Run workflow" in the Actions tab). No schedule.
+#  - Uses GitHub's free built-in token. Never reads your secrets, never calls Claude.
+#  - Skips 1y / YTD and the Haiku labels; those keep their last values from the live site.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: repo-news
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute short rankings
+        env:
+          STATS_TOKEN: ${{ github.token }}
+          PREV_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data.json
+        run: python3 scripts/update.py --out site/data.json --prev "$PREV_URL"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
